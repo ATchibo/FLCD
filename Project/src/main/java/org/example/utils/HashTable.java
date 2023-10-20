@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static java.lang.Math.abs;
+
 public class HashTable<T, K> {
     private final List<List<HashNode<T, K>>> list;
     private final int capacity;
@@ -13,10 +15,13 @@ public class HashTable<T, K> {
     public HashTable(int capacity) {
         this.capacity = capacity;
         list = new ArrayList<>(capacity);
+        for (int i = 0; i < capacity; ++i) {
+            list.add(null);
+        }
     }
 
     public Optional<K> get(T key) {
-        int index = key.hashCode() % capacity;
+        int index = abs(key.hashCode()) % capacity;
         List<HashNode<T, K>> nodes = list.get(index);
         if (nodes == null) {
             return Optional.empty();
@@ -31,9 +36,26 @@ public class HashTable<T, K> {
         return Optional.empty();
     }
 
-    public void put(T key, K value) {
-        int index = key.hashCode() % capacity;
+    public Optional<HashNode<T, K>> getNode(T key) {
+        int index = abs(key.hashCode()) % capacity;
         List<HashNode<T, K>> nodes = list.get(index);
+        if (nodes == null) {
+            return Optional.empty();
+        }
+
+        for (HashNode<T, K> node : nodes) {
+            if (node.getKey().equals(key)) {
+                return Optional.of(node);
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    public void put(T key, K value) {
+        int index = abs(key.hashCode()) % capacity;
+        List<HashNode<T, K>> nodes = list.get(index);
+
         if (nodes == null) {
             nodes = new ArrayList<>();
             list.set(index, nodes);
@@ -49,7 +71,7 @@ public class HashTable<T, K> {
     }
 
     public Optional<K> remove(T key) {
-        int index = key.hashCode() % capacity;
+        int index = abs(key.hashCode()) % capacity;
         List<HashNode<T, K>> nodes = list.get(index);
         if (nodes == null) {
             return Optional.empty();
