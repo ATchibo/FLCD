@@ -16,4 +16,9 @@ public class HashNode<T, K> {
     public K getValue() {
         return value;
     }
+
+    @Override
+    public String toString() {
+        return key + " | " + value;
+    }
 }
