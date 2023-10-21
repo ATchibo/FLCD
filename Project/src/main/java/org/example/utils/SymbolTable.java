@@ -6,13 +6,13 @@ import java.util.Optional;
 
 public class SymbolTable {
     private final HashTable<String, Integer> identifiersHashTable;
-    private final HashTable<String, Integer> stingConstHashTable;
+    private final HashTable<String, Integer> stringConstHashTable;
     private final HashTable<String, Integer> intConstHashTable;
     private int count;
 
     public SymbolTable(int capacity) {
         identifiersHashTable = new HashTable<>(capacity);
-        stingConstHashTable = new HashTable<>(capacity);
+        stringConstHashTable = new HashTable<>(capacity);
         intConstHashTable = new HashTable<>(capacity);
     }
 
@@ -25,7 +25,7 @@ public class SymbolTable {
     }
 
     public Optional<Integer> getStringConst(String key) {
-        return stingConstHashTable.get(key);
+        return stringConstHashTable.get(key);
     }
 
     public Optional<Integer> getIntConst(String key) {
@@ -37,7 +37,7 @@ public class SymbolTable {
     }
 
     public void putStringConst(String key) {
-        stingConstHashTable.put(key, count++);
+        stringConstHashTable.put(key, count++);
     }
 
     public void putIntConst(String key) {
@@ -49,7 +49,7 @@ public class SymbolTable {
     }
 
     public boolean isStringConstPresent(String key) {
-        return stingConstHashTable.isKeyPresent(key);
+        return stringConstHashTable.isKeyPresent(key);
     }
 
     public boolean isIntConstPresent(String key) {
@@ -61,7 +61,7 @@ public class SymbolTable {
     }
 
     public Optional<HashNode<String, Integer>> getStringConstNode(String key) {
-        return stingConstHashTable.getNode(key);
+        return stringConstHashTable.getNode(key);
     }
 
     public Optional<HashNode<String, Integer>> getIntConstNode(String key) {
@@ -73,7 +73,7 @@ public class SymbolTable {
     }
 
     public HashTable<String, Integer> getStringConstHashTable() {
-        return stingConstHashTable;
+        return stringConstHashTable;
     }
 
     public HashTable<String, Integer> getIntConstHashTable() {
@@ -85,7 +85,7 @@ public class SymbolTable {
         return "ST\n" +
                 "Size: " + count + "\n" +
                 identifiersHashTable +
-                stingConstHashTable +
+                stringConstHashTable +
                 intConstHashTable;
     }
 }
