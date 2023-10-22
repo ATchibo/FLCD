@@ -1,6 +1,6 @@
 package org.example.utils;
 
-import org.example.domain.HashNode;
+import org.example.domain.Position;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,9 +9,10 @@ import java.util.Optional;
 
 import static java.lang.Math.abs;
 
-public class HashTable<T, K> implements Iterable<HashNode<T, K>> {
-    private final List<List<HashNode<T, K>>> list;
+public class HashTable<T extends Comparable<T>> implements Iterable<T> {
+    private final List<List<T>> list;
     private final int capacity;
+    private int size;
 
     public HashTable(int capacity) {
         this.capacity = capacity;
@@ -19,33 +20,67 @@ public class HashTable<T, K> implements Iterable<HashNode<T, K>> {
         for (int i = 0; i < capacity; ++i) {
             list.add(null);
         }
+
+        size = 0;
     }
 
-    public Optional<K> get(T key) {
-        int index = abs(key.hashCode()) % capacity;
-        List<HashNode<T, K>> nodes = list.get(index);
+    public Optional<T> getByPosition(Position position) {
+        List<T> nodes = list.get(position.getLine());
+        if (nodes == null || position.getColumn() >= nodes.size()) {
+            return Optional.empty();
+        }
+
+        return Optional.of(nodes.get(position.getColumn()));
+    }
+
+    public Optional<Position> getPosition(T element) {
+        int index = abs(element.hashCode()) % capacity;
+        List<T> nodes = list.get(index);
         if (nodes == null) {
             return Optional.empty();
         }
 
-        for (HashNode<T, K> node : nodes) {
-            if (node.getKey().equals(key)) {
-                return Optional.of(node.getValue());
+        for (T node : nodes) {
+            if (node.equals(element)) {
+                return Optional.of(new Position(index, nodes.indexOf(node)));
             }
         }
 
         return Optional.empty();
     }
 
-    public Optional<HashNode<T, K>> getNode(T key) {
-        int index = abs(key.hashCode()) % capacity;
-        List<HashNode<T, K>> nodes = list.get(index);
+
+    public Position put(T element) {
+        int index = abs(element.hashCode()) % capacity;
+        List<T> nodes = list.get(index);
+
+        if (nodes == null) {
+            nodes = new ArrayList<>();
+            list.set(index, nodes);
+        }
+
+        for (T node : nodes) {
+            if (node.equals(element)) {
+                throw new IllegalArgumentException("Key already exists");
+            }
+        }
+
+        nodes.add(element);
+        ++size;
+
+        return new Position(index, nodes.size() - 1);
+    }
+
+    public Optional<T> remove(T element) {
+        int index = abs(element.hashCode()) % capacity;
+        List<T> nodes = list.get(index);
         if (nodes == null) {
             return Optional.empty();
         }
 
-        for (HashNode<T, K> node : nodes) {
-            if (node.getKey().equals(key)) {
+        for (T node : nodes) {
+            if (node.equals(element)) {
+                nodes.remove(node);
                 return Optional.of(node);
             }
         }
@@ -53,50 +88,15 @@ public class HashTable<T, K> implements Iterable<HashNode<T, K>> {
         return Optional.empty();
     }
 
-    public void put(T key, K value) {
-        int index = abs(key.hashCode()) % capacity;
-        List<HashNode<T, K>> nodes = list.get(index);
-
-        if (nodes == null) {
-            nodes = new ArrayList<>();
-            list.set(index, nodes);
-        }
-
-        for (HashNode<T, K> node : nodes) {
-            if (node.getKey().equals(key)) {
-                throw new IllegalArgumentException("Key already exists");
-            }
-        }
-
-        nodes.add(new HashNode<>(key, value));
-    }
-
-    public Optional<K> remove(T key) {
-        int index = abs(key.hashCode()) % capacity;
-        List<HashNode<T, K>> nodes = list.get(index);
-        if (nodes == null) {
-            return Optional.empty();
-        }
-
-        for (HashNode<T, K> node : nodes) {
-            if (node.getKey().equals(key)) {
-                nodes.remove(node);
-                return Optional.of(node.getValue());
-            }
-        }
-
-        return Optional.empty();
-    }
-
-    public boolean isKeyPresent(T key) {
-        int index = abs(key.hashCode()) % capacity;
-        List<HashNode<T, K>> nodes = list.get(index);
+    public boolean isElementPresent(T element) {
+        int index = abs(element.hashCode()) % capacity;
+        List<T> nodes = list.get(index);
         if (nodes == null) {
             return false;
         }
 
-        for (HashNode<T, K> node : nodes) {
-            if (node.getKey().equals(key)) {
+        for (T node : nodes) {
+            if (node.equals(element)) {
                 return true;
             }
         }
@@ -104,8 +104,12 @@ public class HashTable<T, K> implements Iterable<HashNode<T, K>> {
         return false;
     }
 
-    private List<HashNode<T, K>> getFirstEntry() {
-        for (List<HashNode<T, K>> nodes : list) {
+    public int size() {
+        return size;
+    }
+
+    private List<T> getFirstEntry() {
+        for (List<T> nodes : list) {
             if (nodes != null) {
                 return nodes;
             }
@@ -114,13 +118,13 @@ public class HashTable<T, K> implements Iterable<HashNode<T, K>> {
         return null;
     }
     @Override
-    public Iterator<HashNode<T, K>> iterator() {
+    public Iterator<T> iterator() {
         return new Iterator<>() {
 
-            private List<HashNode<T, K>> firstEntry = getFirstEntry();
+            private final List<T> firstEntry = getFirstEntry();
             private int index = list.indexOf(firstEntry);
 
-            private Iterator<HashNode<T, K>> nodesIterator =
+            private Iterator<T> nodesIterator =
                     firstEntry == null ? null : firstEntry.iterator();
 
             @Override
@@ -134,7 +138,7 @@ public class HashTable<T, K> implements Iterable<HashNode<T, K>> {
                 }
 
                 while (index++ < capacity - 1) {
-                    List<HashNode<T, K>> temp = list.get(index);
+                    List<T> temp = list.get(index);
                     if (temp == null) {
                         continue;
                     }
@@ -149,7 +153,7 @@ public class HashTable<T, K> implements Iterable<HashNode<T, K>> {
             }
 
             @Override
-            public HashNode<T, K> next() {
+            public T next() {
                 return nodesIterator.next();
             }
         };
@@ -158,8 +162,8 @@ public class HashTable<T, K> implements Iterable<HashNode<T, K>> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (HashNode<T, K> node : this) {
-            sb.append(node.toString()).append("\n");
+        for (T node : this) {
+            sb.append(this.getPosition(node).get()).append(" | ").append(node).append("\n");
         }
         return sb.toString();
     }
