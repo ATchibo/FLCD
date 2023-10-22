@@ -1,31 +1,32 @@
 package org.example.utils;
 
-import org.example.domain.Position;
 import org.example.domain.SymbolInfo;
 
 import java.util.Optional;
 
 public class SymbolTable {
-    private final HashTable<SymbolInfo> symbolTableEntries;
+    private final HashTable<Integer, SymbolInfo> symbolTableEntries;
+    private int count;
 
     public SymbolTable(int capacity) {
         symbolTableEntries = new HashTable<>(capacity);
+        count = 0;
     }
 
     public SymbolTable() {
         this(100);
     }
 
-    public Position put(SymbolInfo value) {
-        return symbolTableEntries.put(value);
+    public Integer put(SymbolInfo value) {
+        return symbolTableEntries.put(count++, value);
     }
 
-    public Optional<Position> getPosition(SymbolInfo key) {
-        return symbolTableEntries.getPosition(key);
+    public Optional<Integer> getKey(SymbolInfo value) {
+        return symbolTableEntries.getKey(value);
     }
 
-    public Optional<SymbolInfo> getByPosition(Position key) {
-        return symbolTableEntries.getByPosition(key);
+    public Optional<SymbolInfo> getByKey(Integer key) {
+        return symbolTableEntries.getByKey(key);
     }
 
     public boolean contains(SymbolInfo key) {

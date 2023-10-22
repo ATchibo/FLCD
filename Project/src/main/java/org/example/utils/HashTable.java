@@ -1,6 +1,7 @@
 package org.example.utils;
 
-import org.example.domain.Position;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -9,8 +10,8 @@ import java.util.Optional;
 
 import static java.lang.Math.abs;
 
-public class HashTable<T extends Comparable<T>> implements Iterable<T> {
-    private final List<List<T>> list;
+public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T>> {
+    private final List<List<Pair<K, T>>> list;
     private final int capacity;
     private int size;
 
@@ -24,64 +25,72 @@ public class HashTable<T extends Comparable<T>> implements Iterable<T> {
         size = 0;
     }
 
-    public Optional<T> getByPosition(Position position) {
-        List<T> nodes = list.get(position.getLine());
-        if (nodes == null || position.getColumn() >= nodes.size()) {
-            return Optional.empty();
-        }
+    public Optional<T> getByKey(K key) {
+        for (List<Pair<K, T>> nodes: list) {
+            if (nodes == null) {
+                continue;
+            }
 
-        return Optional.of(nodes.get(position.getColumn()));
-    }
-
-    public Optional<Position> getPosition(T element) {
-        int index = abs(element.hashCode()) % capacity;
-        List<T> nodes = list.get(index);
-        if (nodes == null) {
-            return Optional.empty();
-        }
-
-        for (T node : nodes) {
-            if (node.equals(element)) {
-                return Optional.of(new Position(index, nodes.indexOf(node)));
+            for (Pair<K, T> node : nodes) {
+                if (node.getKey().equals(key)) {
+                    return Optional.of(node.getValue());
+                }
             }
         }
 
         return Optional.empty();
     }
 
-
-    public Position put(T element) {
+    public Optional<K> getKey(T element) {
         int index = abs(element.hashCode()) % capacity;
-        List<T> nodes = list.get(index);
+        List<Pair<K, T>> nodes = list.get(index);
+        if (nodes == null) {
+            return Optional.empty();
+        }
+
+        for (Pair<K, T> node : nodes) {
+            if (node.getValue().equals(element)) {
+                return Optional.of(node.getKey());
+            }
+        }
+
+        return Optional.empty();
+    }
+
+    public K put(K key, T element) {
+        int index = abs(element.hashCode()) % capacity;
+        List<Pair<K, T>> nodes = list.get(index);
 
         if (nodes == null) {
             nodes = new ArrayList<>();
             list.set(index, nodes);
         }
 
-        for (T node : nodes) {
-            if (node.equals(element)) {
+        for (Pair<K, T> node : nodes) {
+            if (node.getRight().equals(element)) {
                 throw new IllegalArgumentException("Key already exists");
             }
         }
 
-        nodes.add(element);
+        nodes.add(new ImmutablePair<>(key, element));
         ++size;
 
-        return new Position(index, nodes.size() - 1);
+        return key;
     }
 
     public Optional<T> remove(T element) {
         int index = abs(element.hashCode()) % capacity;
-        List<T> nodes = list.get(index);
+        List<Pair<K, T>> nodes = list.get(index);
+
         if (nodes == null) {
-            return Optional.empty();
+            nodes = new ArrayList<>();
+            list.set(index, nodes);
         }
 
-        for (T node : nodes) {
-            if (node.equals(element)) {
+        for (Pair<K, T> node : nodes) {
+            if (node.getRight().equals(element)) {
                 nodes.remove(node);
-                return Optional.of(node);
+                return Optional.of(element);
             }
         }
 
@@ -89,27 +98,15 @@ public class HashTable<T extends Comparable<T>> implements Iterable<T> {
     }
 
     public boolean isElementPresent(T element) {
-        int index = abs(element.hashCode()) % capacity;
-        List<T> nodes = list.get(index);
-        if (nodes == null) {
-            return false;
-        }
-
-        for (T node : nodes) {
-            if (node.equals(element)) {
-                return true;
-            }
-        }
-
-        return false;
+        return getKey(element).isPresent();
     }
 
     public int size() {
         return size;
     }
 
-    private List<T> getFirstEntry() {
-        for (List<T> nodes : list) {
+    private List<Pair<K, T>> getFirstEntry() {
+        for (List<Pair<K, T>> nodes : list) {
             if (nodes != null) {
                 return nodes;
             }
@@ -118,13 +115,13 @@ public class HashTable<T extends Comparable<T>> implements Iterable<T> {
         return null;
     }
     @Override
-    public Iterator<T> iterator() {
+    public Iterator<Pair<K, T>> iterator() {
         return new Iterator<>() {
 
-            private final List<T> firstEntry = getFirstEntry();
+            private final List<Pair<K, T>> firstEntry = getFirstEntry();
             private int index = list.indexOf(firstEntry);
 
-            private Iterator<T> nodesIterator =
+            private Iterator<Pair<K, T>> nodesIterator =
                     firstEntry == null ? null : firstEntry.iterator();
 
             @Override
@@ -138,7 +135,7 @@ public class HashTable<T extends Comparable<T>> implements Iterable<T> {
                 }
 
                 while (index++ < capacity - 1) {
-                    List<T> temp = list.get(index);
+                    List<Pair<K, T>> temp = list.get(index);
                     if (temp == null) {
                         continue;
                     }
@@ -153,7 +150,7 @@ public class HashTable<T extends Comparable<T>> implements Iterable<T> {
             }
 
             @Override
-            public T next() {
+            public Pair<K, T> next() {
                 return nodesIterator.next();
             }
         };
@@ -162,8 +159,8 @@ public class HashTable<T extends Comparable<T>> implements Iterable<T> {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        for (T node : this) {
-            sb.append(this.getPosition(node).get()).append(" | ").append(node).append("\n");
+        for (Pair<K, T> node : this) {
+            sb.append(node.getKey()).append(" | ").append(node.getValue()).append("\n");
         }
         return sb.toString();
     }
