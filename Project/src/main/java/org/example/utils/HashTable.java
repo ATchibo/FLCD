@@ -25,15 +25,32 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
         size = 0;
     }
 
-    public Optional<T> getByKey(K key) {
+    public Optional<T> getElement(K key) {
+        int index = abs(key.hashCode()) % capacity;
+        List<Pair<K, T>> nodes = list.get(index);
+        if (nodes == null) {
+            return Optional.empty();
+        }
+
+        for (Pair<K, T> node : nodes) {
+            if (node.getKey().equals(key)) {
+                return Optional.of(node.getValue());
+            }
+        }
+
+
+        return Optional.empty();
+    }
+
+    public Optional<K> getKey(T element) {
         for (List<Pair<K, T>> nodes: list) {
             if (nodes == null) {
                 continue;
             }
 
             for (Pair<K, T> node : nodes) {
-                if (node.getKey().equals(key)) {
-                    return Optional.of(node.getValue());
+                if (node.getValue().equals(element)) {
+                    return Optional.of(node.getKey());
                 }
             }
         }
@@ -41,24 +58,11 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
         return Optional.empty();
     }
 
-    public Optional<K> getKey(T element) {
-        int index = abs(element.hashCode()) % capacity;
-        List<Pair<K, T>> nodes = list.get(index);
-        if (nodes == null) {
-            return Optional.empty();
-        }
-
-        for (Pair<K, T> node : nodes) {
-            if (node.getValue().equals(element)) {
-                return Optional.of(node.getKey());
-            }
-        }
-
-        return Optional.empty();
-    }
-
     public K put(K key, T element) {
-        int index = abs(element.hashCode()) % capacity;
+        if (isElementPresent(element))
+            throw new IllegalArgumentException("Element already exists");
+
+        int index = abs(key.hashCode()) % capacity;
         List<Pair<K, T>> nodes = list.get(index);
 
         if (nodes == null) {
@@ -67,7 +71,7 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
         }
 
         for (Pair<K, T> node : nodes) {
-            if (node.getRight().equals(element)) {
+            if (node.getKey().equals(key)) {
                 throw new IllegalArgumentException("Key already exists");
             }
         }
@@ -78,8 +82,12 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
         return key;
     }
 
-    public Optional<T> remove(T element) {
-        int index = abs(element.hashCode()) % capacity;
+    public Optional<T> remove(K key) {
+        if (key == null) {
+            return Optional.empty();
+        }
+
+        int index = abs(key.hashCode()) % capacity;
         List<Pair<K, T>> nodes = list.get(index);
 
         if (nodes == null) {
@@ -88,13 +96,17 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
         }
 
         for (Pair<K, T> node : nodes) {
-            if (node.getRight().equals(element)) {
+            if (node.getKey().equals(key)) {
                 nodes.remove(node);
-                return Optional.of(element);
+                return Optional.of(node.getValue());
             }
         }
 
         return Optional.empty();
+    }
+
+    public Optional<T> remove(T element) {
+        return remove(getKey(element).get());
     }
 
     public boolean isElementPresent(T element) {

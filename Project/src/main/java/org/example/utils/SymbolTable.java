@@ -26,11 +26,11 @@ public class SymbolTable {
     }
 
     public Optional<SymbolInfo> getByKey(Integer key) {
-        return symbolTableEntries.getByKey(key);
+        return symbolTableEntries.getElement(key);
     }
 
-    public boolean contains(SymbolInfo key) {
-        return symbolTableEntries.isElementPresent(key);
+    public boolean contains(SymbolInfo value) {
+        return symbolTableEntries.isElementPresent(value);
     }
 
     public int size() {
