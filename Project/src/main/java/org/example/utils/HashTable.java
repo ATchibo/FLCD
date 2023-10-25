@@ -113,6 +113,10 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
         return getKey(element).isPresent();
     }
 
+    public boolean contains(K key) {
+        return getElement(key).isPresent();
+    }
+
     public int size() {
         return size;
     }

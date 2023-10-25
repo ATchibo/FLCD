@@ -33,6 +33,10 @@ public class SymbolTable {
         return symbolTableEntries.isElementPresent(value);
     }
 
+    public boolean containsKey(Integer key) {
+        return symbolTableEntries.contains(key);
+    }
+
     public int size() {
         return symbolTableEntries.size();
     }
