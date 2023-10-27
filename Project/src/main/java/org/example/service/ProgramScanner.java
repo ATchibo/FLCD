@@ -102,8 +102,6 @@ public class ProgramScanner {
 
         writeStToFile();
         writePifToFile();
-//        System.out.println(symbolTable);
-//        System.out.println(pif);
 
         return new ScannerOkMessage();
     }
@@ -152,7 +150,7 @@ public class ProgramScanner {
             } else {
                 position = symbolTable.put(newSymbol);
             }
-            pif.add(word, position);
+            pif.add("identifier", position);
         }
 
         currentLineIndex += word.length();
@@ -166,7 +164,7 @@ public class ProgramScanner {
         if (matcher.find()) {
             String word = "\"" + matcher.group(1) + "\"";
             Integer position = symbolTable.put(new SymbolInfo(word, ValueTypes.STRING_CONST));
-            pif.add(word, position);
+            pif.add("str_const", position);
             currentLineIndex += word.length() + 2;
             return true;
         }
@@ -176,7 +174,7 @@ public class ProgramScanner {
         if (matcher.find()) {
             String word = matcher.group(1);
             Integer position = symbolTable.put(new SymbolInfo(word, ValueTypes.CHAR_CONST));
-            pif.add(word, position);
+            pif.add("char_const", position);
             currentLineIndex += word.length();
             return true;
         }
@@ -186,7 +184,7 @@ public class ProgramScanner {
         if (matcher.find()) {
             String word = matcher.group(1);
             Integer position = symbolTable.put(new SymbolInfo(word, ValueTypes.INT_CONST));
-            pif.add(word, position);
+            pif.add("int_const", position);
             currentLineIndex += word.length();
             return true;
         }
