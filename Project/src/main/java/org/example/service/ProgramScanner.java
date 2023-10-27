@@ -22,6 +22,7 @@ public class ProgramScanner {
     private final List<String> tokens = new ArrayList<>();
     private final List<String> reservedWords = new ArrayList<>();
 
+    private int programCount;
     private String currentLine;
     private int currentLineIndex = 0;
     private int lineCount = 0;
@@ -99,8 +100,10 @@ public class ProgramScanner {
             }
         }
 
-        System.out.println(symbolTable);
-        System.out.println(pif);
+        writeStToFile();
+        writePifToFile();
+//        System.out.println(symbolTable);
+//        System.out.println(pif);
 
         return new ScannerOkMessage();
     }
@@ -142,7 +145,13 @@ public class ProgramScanner {
         if (reservedWords.contains(word)) {
             pif.add(word, -1);
         } else {
-            Integer position = symbolTable.put(new SymbolInfo(word, ValueTypes.IDENTIFIER));
+            SymbolInfo newSymbol = new SymbolInfo(word, ValueTypes.IDENTIFIER);
+            int position;
+            if (symbolTable.contains(newSymbol)) {
+                position = symbolTable.getKey(newSymbol).get();
+            } else {
+                position = symbolTable.put(newSymbol);
+            }
             pif.add(word, position);
         }
 
@@ -203,5 +212,25 @@ public class ProgramScanner {
         currentLine = null;
         symbolTable.clear();
         pif.clear();
+
+        ++programCount;
+    }
+
+    private void writeStToFile() {
+        File stFile = new File("src/main/resources/ST" + programCount + ".out");
+        try (java.io.FileWriter fileWriter = new java.io.FileWriter(stFile)) {
+            fileWriter.write(symbolTable.toString());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    private void writePifToFile() {
+        File pifFile = new File("src/main/resources/PIF" + programCount + ".out");
+        try (java.io.FileWriter fileWriter = new java.io.FileWriter(pifFile)) {
+            fileWriter.write(pif.toString());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 }
