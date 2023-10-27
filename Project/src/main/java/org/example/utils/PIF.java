@@ -29,4 +29,19 @@ public class PIF {
     public Integer size() {
         return pif.size();
     }
+
+    public void clear() {
+        pif.clear();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder tableStr = new StringBuilder();
+            for (Pair<String, Integer> pair : pif) {
+            tableStr.append(pair.getKey()).append(" | ").append(pair.getValue()).append("\n");
+        }
+        return "PIF\n" +
+            "Size: " + pif.size() + "\n" +
+            tableStr;
+    }
 }

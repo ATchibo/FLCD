@@ -11,18 +11,13 @@ import java.util.Optional;
 import static java.lang.Math.abs;
 
 public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T>> {
-    private final List<List<Pair<K, T>>> list;
+    private List<List<Pair<K, T>>> list;
     private final int capacity;
     private int size;
 
     public HashTable(int capacity) {
         this.capacity = capacity;
-        list = new ArrayList<>(capacity);
-        for (int i = 0; i < capacity; ++i) {
-            list.add(null);
-        }
-
-        size = 0;
+        clear();
     }
 
     public Optional<T> getElement(K key) {
@@ -179,5 +174,14 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
             sb.append(node.getKey()).append(" | ").append(node.getValue()).append("\n");
         }
         return sb.toString();
+    }
+
+    public void clear() {
+        list = new ArrayList<>(capacity);
+        for (int i = 0; i < capacity; ++i) {
+            list.add(null);
+        }
+
+        size = 0;
     }
 }

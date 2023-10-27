@@ -86,9 +86,7 @@ public class ProgramScanner {
     }
 
     private ScannerMessage interpretProgram(String programFilePath) throws FileNotFoundException {
-        lineCount = 0;
-        currentLineIndex = 0;
-        currentLine = null;
+        resetScanner();
 
         File programFile = new File(programFilePath);
         Scanner scanner = new Scanner(programFile);
@@ -100,6 +98,9 @@ public class ProgramScanner {
                 return message;
             }
         }
+
+        System.out.println(symbolTable);
+        System.out.println(pif);
 
         return new ScannerOkMessage();
     }
@@ -194,5 +195,13 @@ public class ProgramScanner {
         }
 
         return false;
+    }
+
+    private void resetScanner() {
+        lineCount = 0;
+        currentLineIndex = 0;
+        currentLine = null;
+        symbolTable.clear();
+        pif.clear();
     }
 }
