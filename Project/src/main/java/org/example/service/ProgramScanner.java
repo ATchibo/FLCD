@@ -3,12 +3,18 @@ package org.example.service;
 import org.example.domain.ScannerErrorMessage;
 import org.example.domain.ScannerMessage;
 import org.example.domain.ScannerOkMessage;
+import org.example.domain.SymbolInfo;
+import org.example.domain.ValueTypes;
+import org.example.utils.PIF;
+import org.example.utils.SymbolTable;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class ProgramScanner {
 
@@ -16,7 +22,18 @@ public class ProgramScanner {
     private final List<String> tokens = new ArrayList<>();
     private final List<String> reservedWords = new ArrayList<>();
 
-    private final String tokenRegex = "([a-zA-Z]+)|([0-9]+)|([\\+\\-\\*\\/\\=\\<\\>\\!\\&\\|\\%\\^\\~\\?\\:\\;\\,\\(\\)\\[\\]\\{\\}])";
+    private String currentLine;
+    private int currentLineIndex = 0;
+    private int lineCount = 0;
+
+    private final SymbolTable symbolTable = new SymbolTable();
+    private final PIF pif = new PIF();
+
+    private final Pattern regexForIdentifier = Pattern.compile("^([a-zA-Z_][a-zA-Z0-9_]*)");
+    private final Pattern regexForNumber = Pattern.compile("^(\\d+)");
+    private final Pattern regexForString = Pattern.compile("^\"([^\"]*)\"");
+
+    private final Pattern regexForChar = Pattern.compile("^'([a-zA-Z0-9_])'");
 
     private final String TOKENS = "TOKENS";
     private final String RESERVED_WORDS = "RESERVED_WORDS";
@@ -72,8 +89,9 @@ public class ProgramScanner {
         File programFile = new File(programFilePath);
         Scanner scanner = new Scanner(programFile);
         while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            ScannerMessage message = interpretLine(line);
+            currentLine = scanner.nextLine();
+            currentLineIndex = 0;
+            ScannerMessage message = interpretLine();
             if (message instanceof ScannerErrorMessage) {
                 return message;
             }
@@ -82,9 +100,95 @@ public class ProgramScanner {
         return new ScannerOkMessage();
     }
 
-    private ScannerMessage interpretLine(String line) {
+    private ScannerMessage interpretLine() {
+        ++lineCount;
 
+        while (currentLineIndex < currentLine.length()) {
+            skipWhiteSpaces();
+
+            if (interpretIdentifier())
+                continue;
+            if (interpretConstant())
+                continue;
+            if (interpretToken())
+                continue;
+
+            return new ScannerErrorMessage(lineCount, currentLineIndex);
+        }
 
         return new ScannerOkMessage();
+    }
+
+    private void skipWhiteSpaces() {
+        for (; currentLineIndex < currentLine.length(); ++currentLineIndex) {
+            if (!Character.isWhitespace(currentLine.charAt(currentLineIndex))) {
+                return;
+            }
+        }
+    }
+
+    private boolean interpretIdentifier() {
+        Matcher matcher = regexForIdentifier.matcher(currentLine.substring(currentLineIndex));
+        if (!matcher.find()) {
+            return false;
+        }
+        String word = matcher.group(1);
+
+        if (reservedWords.contains(word)) {
+            pif.add(word, -1);
+        } else {
+            Integer position = symbolTable.put(new SymbolInfo(word, ValueTypes.IDENTIFIER));
+            pif.add(word, position);
+        }
+
+        currentLineIndex += word.length();
+
+        return true;
+    }
+
+    private boolean interpretConstant() {
+        //String const
+        Matcher matcher = regexForString.matcher(currentLine.substring(currentLineIndex));
+        if (matcher.find()) {
+            String word = matcher.group(1);
+            Integer position = symbolTable.put(new SymbolInfo(word, ValueTypes.STRING_CONST));
+            pif.add(word, position);
+            currentLineIndex += word.length();
+            return true;
+        }
+
+        //Char const
+        matcher = regexForChar.matcher(currentLine.substring(currentLineIndex));
+        if (matcher.find()) {
+            String word = matcher.group(1);
+            Integer position = symbolTable.put(new SymbolInfo(word, ValueTypes.CHAR_CONST));
+            pif.add(word, position);
+            currentLineIndex += word.length();
+            return true;
+        }
+
+        //Number const
+        matcher = regexForNumber.matcher(currentLine.substring(currentLineIndex));
+        if (matcher.find()) {
+            String word = matcher.group(1);
+            Integer position = symbolTable.put(new SymbolInfo(word, ValueTypes.INT_CONST));
+            pif.add(word, position);
+            currentLineIndex += word.length();
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean interpretToken() {
+        for (String token : tokens) {
+            if (currentLine.startsWith(token, currentLineIndex)) {
+                pif.add(token, -1);
+                currentLineIndex += token.length();
+                return true;
+            }
+        }
+
+        return false;
     }
 }

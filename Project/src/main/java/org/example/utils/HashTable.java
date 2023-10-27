@@ -60,7 +60,7 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
 
     public K put(K key, T element) {
         if (isElementPresent(element))
-            throw new IllegalArgumentException("Element already exists");
+            return key;
 
         int index = abs(key.hashCode()) % capacity;
         List<Pair<K, T>> nodes = list.get(index);
@@ -72,7 +72,7 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
 
         for (Pair<K, T> node : nodes) {
             if (node.getKey().equals(key)) {
-                throw new IllegalArgumentException("Key already exists");
+                return key;
             }
         }
 

@@ -1,0 +1,19 @@
+int a;
+int b;
+
+a = 10;
+b = 20;
+
+int r;
+
+r = b;
+
+while (b > 0) {
+	r = a % b;
+	a = b;
+	b = r;
+}
+
+print(a);
+
+return;
