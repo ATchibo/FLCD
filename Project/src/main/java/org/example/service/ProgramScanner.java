@@ -164,7 +164,7 @@ public class ProgramScanner {
         //String const
         Matcher matcher = regexForString.matcher(currentLine.substring(currentLineIndex));
         if (matcher.find()) {
-            String word = matcher.group(1);
+            String word = "\"" + matcher.group(1) + "\"";
             Integer position = symbolTable.put(new SymbolInfo(word, ValueTypes.STRING_CONST));
             pif.add(word, position);
             currentLineIndex += word.length() + 2;

@@ -1,5 +1,5 @@
 PIF
-Size: 91
+Size: 83
 int | -1
 a | 12
 ; | -1
@@ -17,9 +17,7 @@ a | 12
 { | -1
 write | -1
 ( | -1
-Number is prime | 14
-) | -1
-; | -1
+"Number is prime" | 14
 return | -1
 ; | -1
 } | -1
@@ -38,9 +36,7 @@ a | 12
 { | -1
 write | -1
 ( | -1
-Number is not prime | 18
-) | -1
-; | -1
+"Number is not prime" | 18
 return | -1
 ; | -1
 } | -1
@@ -71,9 +67,7 @@ d | 19
 { | -1
 write | -1
 ( | -1
-Number is not prime | 22
-) | -1
-; | -1
+"Number is not prime" | 22
 return | -1
 ; | -1
 } | -1
@@ -86,8 +80,6 @@ d | 19
 } | -1
 write | -1
 ( | -1
-Number is prime | 24
-) | -1
-; | -1
+"Number is prime" | 24
 return | -1
 ; | -1

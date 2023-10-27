@@ -1,5 +1,5 @@
 PIF
-Size: 69
+Size: 63
 int | -1
 a | 6
 ; | -1
@@ -37,9 +37,7 @@ c | 8
 { | -1
 write | -1
 ( | -1
-The first number is the max | 9
-) | -1
-; | -1
+"The first number is the max" | 9
 return | -1
 ; | -1
 } | -1
@@ -56,16 +54,12 @@ c | 8
 { | -1
 write | -1
 ( | -1
-The second number is the max | 10
-) | -1
-; | -1
+"The second number is the max" | 10
 return | -1
 ; | -1
 } | -1
 write | -1
 ( | -1
-The third number is the max | 11
-) | -1
-; | -1
+"The third number is the max" | 11
 return | -1
 ; | -1
