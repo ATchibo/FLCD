@@ -1,4 +1,4 @@
-https://github.com/ATchibo/FLCD
+﻿https://github.com/ATchibo/FLCD
 
 The SymbolTable class is implemented in the SymbolTable.java file.
 It uses a HashTable with coalesced chaining to store all the key-value pairs from the table.
