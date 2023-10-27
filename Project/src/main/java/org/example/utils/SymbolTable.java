@@ -47,4 +47,8 @@ public class SymbolTable {
                 "Size: " + symbolTableEntries.size() + "\n" +
                 symbolTableEntries;
     }
+
+    public void clear() {
+        symbolTableEntries.clear();
+    }
 }

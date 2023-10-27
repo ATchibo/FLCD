@@ -1,0 +1,8 @@
+ST
+Size: 6
+6 | a: IDENTIFIER
+7 | b: IDENTIFIER
+8 | c: IDENTIFIER
+9 | "The first number is the max": STRING_CONST
+10 | "The second number is the max": STRING_CONST
+11 | "The third number is the max": STRING_CONST

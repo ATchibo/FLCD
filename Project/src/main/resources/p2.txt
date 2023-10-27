@@ -1,0 +1,20 @@
+int a;
+int b;
+int c;
+
+read(a);
+read(b);
+read(c);
+
+if (a >= b && a >= c) {
+    write("The first number is the max");
+    return;
+}
+
+if (b >= a && b >= c) {
+    write("The second number is the max");
+    return;
+}
+
+write("The third number is the max");
+return;

@@ -1,0 +1,27 @@
+int a;
+
+read(a);
+
+if (a == 2) {
+    write("Number is prime");
+    return;
+}
+
+if (a < 2 || a % 2 == 0) {
+    write("Number is not prime");
+    return;
+}
+
+int d;
+d = 3;
+
+while (d * d <= a) {
+    if (a % d == 0) {
+        write("Number is not prime");
+        return;
+    }
+    d = d + 2;
+}
+
+write("Number is prime");
+return;

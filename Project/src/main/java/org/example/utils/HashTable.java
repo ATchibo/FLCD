@@ -11,18 +11,13 @@ import java.util.Optional;
 import static java.lang.Math.abs;
 
 public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T>> {
-    private final List<List<Pair<K, T>>> list;
+    private List<List<Pair<K, T>>> list;
     private final int capacity;
     private int size;
 
     public HashTable(int capacity) {
         this.capacity = capacity;
-        list = new ArrayList<>(capacity);
-        for (int i = 0; i < capacity; ++i) {
-            list.add(null);
-        }
-
-        size = 0;
+        clear();
     }
 
     public Optional<T> getElement(K key) {
@@ -60,7 +55,7 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
 
     public K put(K key, T element) {
         if (isElementPresent(element))
-            throw new IllegalArgumentException("Element already exists");
+            return key;
 
         int index = abs(key.hashCode()) % capacity;
         List<Pair<K, T>> nodes = list.get(index);
@@ -72,7 +67,7 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
 
         for (Pair<K, T> node : nodes) {
             if (node.getKey().equals(key)) {
-                throw new IllegalArgumentException("Key already exists");
+                return key;
             }
         }
 
@@ -179,5 +174,14 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
             sb.append(node.getKey()).append(" | ").append(node.getValue()).append("\n");
         }
         return sb.toString();
+    }
+
+    public void clear() {
+        list = new ArrayList<>(capacity);
+        for (int i = 0; i < capacity; ++i) {
+            list.add(null);
+        }
+
+        size = 0;
     }
 }

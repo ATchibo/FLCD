@@ -1,0 +1,11 @@
+int ca$tor;
+
+read(ca$tor);
+
+if (ca$tor >= 0) {
+    write('Number is non negative');
+} else {
+    write("Number is negative");
+}
+
+return;
