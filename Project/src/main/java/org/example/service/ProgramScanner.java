@@ -86,6 +86,10 @@ public class ProgramScanner {
     }
 
     private ScannerMessage interpretProgram(String programFilePath) throws FileNotFoundException {
+        lineCount = 0;
+        currentLineIndex = 0;
+        currentLine = null;
+
         File programFile = new File(programFilePath);
         Scanner scanner = new Scanner(programFile);
         while (scanner.hasNextLine()) {
@@ -113,7 +117,7 @@ public class ProgramScanner {
             if (interpretToken())
                 continue;
 
-            return new ScannerErrorMessage(lineCount, currentLineIndex);
+            return new ScannerErrorMessage(lineCount, currentLineIndex + 1);
         }
 
         return new ScannerOkMessage();
@@ -153,7 +157,7 @@ public class ProgramScanner {
             String word = matcher.group(1);
             Integer position = symbolTable.put(new SymbolInfo(word, ValueTypes.STRING_CONST));
             pif.add(word, position);
-            currentLineIndex += word.length();
+            currentLineIndex += word.length() + 2;
             return true;
         }
 

@@ -19,8 +19,13 @@ public class Main {
         }
 
         ScannerMessage scannerMessage = scanner.scan("src/main/resources/p1.txt");
+        System.out.println("P1: " + scannerMessage.getMessage());
 
-        System.out.println(scannerMessage.getMessage());
+        scannerMessage = scanner.scan("src/main/resources/p2.txt");
+        System.out.println("P2: " + scannerMessage.getMessage());
+
+        scannerMessage = scanner.scan("src/main/resources/p3.txt");
+        System.out.println("P3: " + scannerMessage.getMessage());
 
 //        SymbolTable symbolTable = new SymbolTable();
 //
