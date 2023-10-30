@@ -10,6 +10,14 @@ public class SymbolInfo implements Comparable<SymbolInfo> {
         this.valueType = valueType;
     }
 
+    public String getValue() {
+        return value;
+    }
+
+    public ValueTypes getValueType() {
+        return valueType;
+    }
+
     @Override
     public int compareTo(SymbolInfo t) {
         return value.compareTo(t.value);

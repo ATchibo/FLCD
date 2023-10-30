@@ -1,9 +1,9 @@
 ST
 Size: 7
-12 | a: IDENTIFIER
-13 | 2: INT_CONST
-14 | "Number is prime": STRING_CONST
-17 | 0: INT_CONST
-18 | "Number is not prime": STRING_CONST
-19 | d: IDENTIFIER
-20 | 3: INT_CONST
+d | 19
+"Number is prime" | 14
+"Number is not prime" | 18
+0 | 17
+2 | 13
+3 | 20
+a | 12
