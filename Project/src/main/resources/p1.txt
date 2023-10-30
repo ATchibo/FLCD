@@ -8,7 +8,7 @@ int r;
 
 r = b;
 
-while (b > 0) {
+while (b > -10) {
 	r = a % b;
 	a = b;
 	b = r;

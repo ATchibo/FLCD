@@ -67,7 +67,7 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
 
         for (Pair<K, T> node : nodes) {
             if (node.getKey().equals(key)) {
-                return element;
+                return node.getValue();
             }
         }
 

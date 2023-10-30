@@ -1,5 +1,5 @@
 PIF
-Size: 50
+Size: 51
 int | -1
 identifier | 0
 ; | -1
@@ -25,7 +25,8 @@ while | -1
 ( | -1
 identifier | 1
 > | -1
-int_const | 5
+- | -1
+int_const | 2
 ) | -1
 { | -1
 identifier | 4
