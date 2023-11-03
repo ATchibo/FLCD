@@ -1,10 +1,7 @@
 package org.example;
 
 import org.example.domain.ScannerMessage;
-import org.example.domain.SymbolInfo;
-import org.example.domain.ValueTypes;
 import org.example.service.ProgramScanner;
-import org.example.utils.SymbolTable;
 
 import java.io.FileNotFoundException;
 

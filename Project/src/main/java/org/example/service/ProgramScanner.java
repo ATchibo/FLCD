@@ -11,6 +11,8 @@ import org.example.utils.SymbolTable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -76,6 +78,9 @@ public class ProgramScanner {
                     }
             }
         }
+
+        tokens.sort(Comparator.comparing(String::length).reversed());
+        reservedWords.sort(Comparator.comparing(String::length).reversed());
     }
 
     public ScannerMessage scan(String programFilePath) {
