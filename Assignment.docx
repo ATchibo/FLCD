@@ -1,0 +1,88 @@
+Repo link: https://github.com/ATchibo/FLCD
+Documentation:
+In order to scan a program, you instantiate a ProgramScanner object. You should have a file token.in in the resources folder.
+To scan a program, you call programScanner.scan(program_path) and print the returned message.
+
+Input (p1): 
+int a;
+int b;
+
+a = 10;
+b = 20;
+
+int r;
+
+r = b;
+
+while (b > 0) {
+	r = a % b;
+	a = b;
+	b = r;
+}
+
+write(a);
+
+return;
+
+PIF:
+int | -1
+identifier | 0
+; | -1
+int | -1
+identifier | 1
+; | -1
+identifier | 0
+= | -1
+int_const | 2
+; | -1
+identifier | 1
+= | -1
+int_const | 3
+; | -1
+int | -1
+identifier | 4
+; | -1
+identifier | 4
+= | -1
+identifier | 1
+; | -1
+while | -1
+( | -1
+identifier | 1
+> | -1
+int_const | 5
+) | -1
+{ | -1
+identifier | 4
+= | -1
+identifier | 0
+% | -1
+identifier | 1
+; | -1
+identifier | 0
+= | -1
+identifier | 1
+; | -1
+identifier | 1
+= | -1
+identifier | 4
+; | -1
+} | -1
+write | -1
+( | -1
+identifier | 0
+) | -1
+; | -1
+return | -1
+; | -1
+
+
+ST:
+r | 4
+0 | 5
+10 | 2
+a | 0
+b | 1
+20 | 3
+
+
