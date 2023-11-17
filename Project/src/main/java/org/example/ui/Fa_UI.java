@@ -9,7 +9,13 @@ public class Fa_UI {
 
     private FiniteAutomata fa;
 
-    public Fa_UI() {}
+    public Fa_UI() {
+        try {
+            fa = new FiniteAutomata("src/main/resources/fa.in");
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public void run() {
 

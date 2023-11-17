@@ -15,4 +15,12 @@ public class Symbol {
     public String toString() {
         return name;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Symbol other) {
+            return name.equals(other.name);
+        }
+        return false;
+    }
 }

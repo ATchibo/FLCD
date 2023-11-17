@@ -2,23 +2,25 @@ package org.example.domain;
 
 public class State {
     private final String name;
-    private final boolean isFinal;
 
-    public State(String name, boolean isFinal) {
+    public State(String name) {
         this.name = name;
-        this.isFinal = isFinal;
     }
 
     public String getName() {
         return name;
     }
 
-    public boolean isFinal() {
-        return isFinal;
-    }
-
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof State other) {
+            return this.name.equals(other.name);
+        }
+        return false;
     }
 }

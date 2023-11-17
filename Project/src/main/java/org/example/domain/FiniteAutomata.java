@@ -35,7 +35,7 @@ public class FiniteAutomata {
                     // read states
                     String[] states = line.split("\\{")[1].split("\\}")[0].split(",");
                     for (String state : states) {
-                        this.states.add(new State(state, false));
+                        this.states.add(new State(state));
                     }
                     break;
 
@@ -54,8 +54,8 @@ public class FiniteAutomata {
                     String[] transitions = line.split("\\{")[1].split("\\}")[0].split(";");
                     for (String transition : transitions) {
                         String[] transitionComponents = transition.split(",");
-                        State fromState = new State(transitionComponents[0], false);
-                        State toState = new State(transitionComponents[1], false);
+                        State fromState = new State(transitionComponents[0]);
+                        State toState = new State(transitionComponents[1]);
                         Symbol symbol = new Symbol(transitionComponents[2]);
                         this.transitions.add(new Transition(fromState, toState, symbol));
                     }
@@ -64,7 +64,7 @@ public class FiniteAutomata {
                 case "in_state":
                     // read initial state
                     String initialState = line.split("=")[1];
-                    this.initialState = new State(initialState, false);
+                    this.initialState = new State(initialState);
 
                     break;
                 case "out_states":
@@ -72,7 +72,7 @@ public class FiniteAutomata {
                     // read final states
                     String[] finalStates = line.split("\\{")[1].split("\\}")[0].split(",");
                     for (String state : finalStates) {
-                        this.finalStates.add(new State(state, false));
+                        this.finalStates.add(new State(state));
                     }
 
                     break;
@@ -111,7 +111,23 @@ public class FiniteAutomata {
                 "\n}";
     }
 
-    public String checkSequence(String sequence) {
-        return "";
+    public boolean checkSequence(String sequence) {
+        return checkSequence(sequence, 0, this.initialState);
+    }
+
+    private boolean checkSequence(String sequence, int currentCharPos, State currentState) {
+        if (currentCharPos == sequence.length()) {
+            return this.finalStates.contains(currentState);
+        }
+
+        Symbol symbol = new Symbol(String.valueOf(sequence.charAt(currentCharPos)));
+        for (Transition transition : this.transitions) {
+            if (transition.getFromState().equals(currentState) && transition.getSymbol().equals(symbol)) {
+                if (checkSequence(sequence, currentCharPos + 1, transition.getToState()))
+                    return true;
+            }
+        }
+
+        return false;
     }
 }
