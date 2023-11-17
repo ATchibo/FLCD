@@ -1,20 +1,14 @@
 package org.example;
 
 import org.example.domain.FiniteAutomata;
+import org.example.ui.Fa_UI;
 
 import java.io.FileNotFoundException;
 
 public class Main {
     public static void main(String[] args) {
 
-        FiniteAutomata fa;
-
-        try {
-            fa = new FiniteAutomata("src/main/resources/fa.in");
-        } catch (FileNotFoundException e) {
-            throw new RuntimeException(e);
-        }
-
-        System.out.println(fa);
+        Fa_UI ui = new Fa_UI();
+        ui.run();
     }
 }

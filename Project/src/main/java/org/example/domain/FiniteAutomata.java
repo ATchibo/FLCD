@@ -103,12 +103,12 @@ public class FiniteAutomata {
     @Override
     public String toString() {
         return "FiniteAutomata{" +
-                "states=" + states +
-                ", alphabet=" + alphabet +
-                ", transitions=" + transitions +
-                ", initialState=" + initialState +
-                ", finalStates=" + finalStates +
-                '}';
+                "\nstates=" + states +
+                ", \nalphabet=" + alphabet +
+                ", \ntransitions=" + transitions +
+                ", \ninitialState=" + initialState +
+                ", \nfinalStates=" + finalStates +
+                "\n}";
     }
 
     public String checkSequence(String sequence) {
