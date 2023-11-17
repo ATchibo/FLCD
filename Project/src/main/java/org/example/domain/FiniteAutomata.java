@@ -112,6 +112,9 @@ public class FiniteAutomata {
     }
 
     public boolean checkSequence(String sequence) {
+        if (sequence.isEmpty())
+            return false;
+
         return checkSequence(sequence, 0, this.initialState);
     }
 

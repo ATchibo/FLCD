@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.domain.FiniteAutomata;
 import org.example.domain.ScannerErrorMessage;
 import org.example.domain.ScannerMessage;
 import org.example.domain.ScannerOkMessage;
@@ -138,11 +139,35 @@ public class ProgramScanner {
     }
 
     private boolean interpretIdentifier() {
-        Matcher matcher = regexForIdentifier.matcher(currentLine.substring(currentLineIndex));
-        if (!matcher.find()) {
+//        Matcher matcher = regexForIdentifier.matcher(currentLine.substring(currentLineIndex));
+//        if (!matcher.find()) {
+//            return false;
+//        }
+//        String word = matcher.group(1);
+
+        int firstTokenIndex = 100000;
+        for (int i = 0; i < tokens.size(); ++i) {
+            int tokenIndex = currentLine.substring(currentLineIndex).indexOf(tokens.get(i));
+            if (tokenIndex != -1 && tokenIndex < firstTokenIndex) {
+                firstTokenIndex = tokenIndex;
+            }
+        }
+
+        int tokenIndex = currentLine.substring(currentLineIndex).indexOf(" ");
+        if (tokenIndex != -1 && tokenIndex < firstTokenIndex) {
+            firstTokenIndex = tokenIndex;
+        }
+
+        String word = currentLine.substring(currentLineIndex, Math.min(currentLineIndex + firstTokenIndex, currentLine.length()));
+        FiniteAutomata fa;
+        try {
+            fa = new FiniteAutomata("src/main/resources/fa_identifier.in");
+        } catch (FileNotFoundException e) {
             return false;
         }
-        String word = matcher.group(1);
+        if (!fa.checkSequence(word)) {
+            return false;
+        }
 
         if (reservedWords.contains(word)) {
             pif.add(new SymbolInfo(word, ValueTypes.RESERVER_WORD), -1);
@@ -182,10 +207,38 @@ public class ProgramScanner {
             return true;
         }
 
-        //Number const
+//        //Number const
         matcher = regexForNumber.matcher(currentLine.substring(currentLineIndex));
         if (matcher.find()) {
             String word = matcher.group(1);
+            Integer position = symbolTable.put(word);
+            pif.add(new SymbolInfo("int_const", ValueTypes.STRING_CONST), position);
+            currentLineIndex += word.length();
+            return true;
+        }
+
+        //Number const
+        int firstTokenIndex = 100000;
+        for (int i = 0; i < tokens.size(); ++i) {
+            int tokenIndex = currentLine.substring(currentLineIndex).indexOf(tokens.get(i));
+            if (tokenIndex != -1 && tokenIndex < firstTokenIndex) {
+                firstTokenIndex = tokenIndex;
+            }
+        }
+
+        int tokenIndex = currentLine.substring(currentLineIndex).indexOf(" ");
+        if (tokenIndex != -1 && tokenIndex < firstTokenIndex) {
+            firstTokenIndex = tokenIndex;
+        }
+
+        String word = currentLine.substring(currentLineIndex, Math.min(currentLineIndex + firstTokenIndex, currentLine.length()));
+        FiniteAutomata fa;
+        try {
+            fa = new FiniteAutomata("src/main/resources/fa_integer.in");
+        } catch (FileNotFoundException e) {
+            return false;
+        }
+        if (fa.checkSequence(word)) {
             Integer position = symbolTable.put(word);
             pif.add(new SymbolInfo("int_const", ValueTypes.STRING_CONST), position);
             currentLineIndex += word.length();
