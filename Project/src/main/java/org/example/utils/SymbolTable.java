@@ -5,7 +5,7 @@ import org.example.domain.SymbolInfo;
 import java.util.Optional;
 
 public class SymbolTable {
-    private final HashTable<Integer, SymbolInfo> symbolTableEntries;
+    private final HashTable<String, Integer> symbolTableEntries;
     private int count;
 
     public SymbolTable(int capacity) {
@@ -17,24 +17,24 @@ public class SymbolTable {
         this(100);
     }
 
-    public Integer put(SymbolInfo value) {
-        return symbolTableEntries.put(count++, value);
+    public Integer put(String value) {
+        return symbolTableEntries.put(value, count++);
     }
 
-    public Optional<Integer> getKey(SymbolInfo value) {
+    public Optional<String> getKey(Integer value) {
         return symbolTableEntries.getKey(value);
     }
 
-    public Optional<SymbolInfo> getByKey(Integer key) {
+    public Optional<Integer> getValue(String key) {
         return symbolTableEntries.getElement(key);
     }
 
-    public boolean contains(SymbolInfo value) {
-        return symbolTableEntries.isElementPresent(value);
+    public boolean contains(String key) {
+        return symbolTableEntries.contains(key);
     }
 
-    public boolean containsKey(Integer key) {
-        return symbolTableEntries.contains(key);
+    public boolean containsValue(Integer value) {
+        return symbolTableEntries.isElementPresent(value);
     }
 
     public int size() {

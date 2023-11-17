@@ -4,5 +4,7 @@ public enum ValueTypes {
     INT_CONST,
     STRING_CONST,
     CHAR_CONST,
-    IDENTIFIER
+    IDENTIFIER,
+    RESERVER_WORD,
+    TOKEN
 }

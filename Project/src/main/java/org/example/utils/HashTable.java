@@ -53,9 +53,9 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
         return Optional.empty();
     }
 
-    public K put(K key, T element) {
+    public T put(K key, T element) {
         if (isElementPresent(element))
-            return key;
+            return element;
 
         int index = abs(key.hashCode()) % capacity;
         List<Pair<K, T>> nodes = list.get(index);
@@ -67,14 +67,14 @@ public class HashTable<K, T extends Comparable<T>> implements Iterable<Pair<K, T
 
         for (Pair<K, T> node : nodes) {
             if (node.getKey().equals(key)) {
-                return key;
+                return node.getValue();
             }
         }
 
         nodes.add(new ImmutablePair<>(key, element));
         ++size;
 
-        return key;
+        return element;
     }
 
     public Optional<T> remove(K key) {

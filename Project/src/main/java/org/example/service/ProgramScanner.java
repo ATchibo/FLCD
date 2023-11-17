@@ -11,6 +11,7 @@ import org.example.utils.SymbolTable;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
 import java.util.regex.Matcher;
@@ -76,6 +77,9 @@ public class ProgramScanner {
                     }
             }
         }
+
+        tokens.sort(Comparator.comparing(String::length).reversed());
+        reservedWords.sort(Comparator.comparing(String::length).reversed());
     }
 
     public ScannerMessage scan(String programFilePath) {
@@ -141,16 +145,15 @@ public class ProgramScanner {
         String word = matcher.group(1);
 
         if (reservedWords.contains(word)) {
-            pif.add(word, -1);
+            pif.add(new SymbolInfo(word, ValueTypes.RESERVER_WORD), -1);
         } else {
-            SymbolInfo newSymbol = new SymbolInfo(word, ValueTypes.IDENTIFIER);
             int position;
-            if (symbolTable.contains(newSymbol)) {
-                position = symbolTable.getKey(newSymbol).get();
+            if (symbolTable.contains(word)) {
+                position = symbolTable.getValue(word).get();
             } else {
-                position = symbolTable.put(newSymbol);
+                position = symbolTable.put(word);
             }
-            pif.add("identifier", position);
+            pif.add(new SymbolInfo("identifier", ValueTypes.IDENTIFIER), position);
         }
 
         currentLineIndex += word.length();
@@ -163,8 +166,8 @@ public class ProgramScanner {
         Matcher matcher = regexForString.matcher(currentLine.substring(currentLineIndex));
         if (matcher.find()) {
             String word = "\"" + matcher.group(1) + "\"";
-            Integer position = symbolTable.put(new SymbolInfo(word, ValueTypes.STRING_CONST));
-            pif.add("str_const", position);
+            Integer position = symbolTable.put(word);
+            pif.add(new SymbolInfo("str_const", ValueTypes.STRING_CONST), position);
             currentLineIndex += word.length() + 2;
             return true;
         }
@@ -173,8 +176,8 @@ public class ProgramScanner {
         matcher = regexForChar.matcher(currentLine.substring(currentLineIndex));
         if (matcher.find()) {
             String word = matcher.group(1);
-            Integer position = symbolTable.put(new SymbolInfo(word, ValueTypes.CHAR_CONST));
-            pif.add("char_const", position);
+            Integer position = symbolTable.put(word);
+            pif.add(new SymbolInfo("char_const", ValueTypes.STRING_CONST), position);
             currentLineIndex += word.length();
             return true;
         }
@@ -183,8 +186,8 @@ public class ProgramScanner {
         matcher = regexForNumber.matcher(currentLine.substring(currentLineIndex));
         if (matcher.find()) {
             String word = matcher.group(1);
-            Integer position = symbolTable.put(new SymbolInfo(word, ValueTypes.INT_CONST));
-            pif.add("int_const", position);
+            Integer position = symbolTable.put(word);
+            pif.add(new SymbolInfo("int_const", ValueTypes.STRING_CONST), position);
             currentLineIndex += word.length();
             return true;
         }
@@ -195,7 +198,7 @@ public class ProgramScanner {
     private boolean interpretToken() {
         for (String token : tokens) {
             if (currentLine.startsWith(token, currentLineIndex)) {
-                pif.add(token, -1);
+                pif.add(new SymbolInfo(token, ValueTypes.TOKEN), -1);
                 currentLineIndex += token.length();
                 return true;
             }
